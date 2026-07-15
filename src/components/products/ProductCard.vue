@@ -16,19 +16,19 @@
    {{ categoria }}
 </span> -->
 <!-- hacemos CATEGORIA pinchable para mostrar sus productos -->
-      <router-link
+      <router-link v-if="!readonly"
         :to="'/categoria/' + props.product.categoryId"
-        class="btn btn-sm btn-outline-secondary mb-2"
-      >
-        {{ categoryName }} Categ
-      </router-link>
+        class="btn btn-sm btn-outline-secondary mb-2">
+      {{ categoryName }} Categ </router-link>
+      <router-link v-else class="btn btn-sm btn-outline-secondary mb-2">
+               {{ categoryName }} Categ </router-link>
       <div class="mt-auto">
         <p class="fs-4 fw-bold text-primary">{{ props.product.precio }} €</p>
 
         <!--<router-link :to="ruta" class="btn btn-outline-primary w-100">
           Ver producto
         </router-link>-->
-        <router-link :to="'/producto/' + props.product.id"
+        <router-link v-if="!readonly" :to="'/producto/' + props.product.id"
                   class="btn btn-outline-primary w-100">
           Ver producto
         </router-link>
@@ -39,7 +39,7 @@
         </button>-->
 
 <button v-if="!readonly" class="btn btn-primary w-100"
-  @click="cart.addItem(product)"
+  @click="cart.addProduct(product)"
 >
   Añadir al carrito
 </button>

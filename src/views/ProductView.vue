@@ -74,8 +74,15 @@ import Breadcrumb from '../components/common/Breadcrumb.vue'
 
 const route = useRoute()
 
-const producto = computed(() =>
+console.log(route.params.id)
+console.log(catalog.products)
+
+/*const producto = computed(() =>
   catalog.getProduct(Number(route.params.id))
+)*/
+
+const producto = computed(() =>
+  catalog.getProduct(route.params.id)
 )
 
 const breadcrumbItems = computed(() => [
