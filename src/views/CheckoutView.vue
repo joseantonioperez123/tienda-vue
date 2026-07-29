@@ -321,6 +321,23 @@
   </div>
 
 </form>
+<CardPaymentModal
+    ref="cardPaymentModal"
+    :total="total"
+    @paid="onCardPaid"
+    @cancel="onCardCancelled"
+/>
+<PaypalPaymentModal
+    ref="paypalPaymentModal"
+    :total="total"
+    @paid="onPaypalPaid"
+/>
+<TransferPaymentModal
+    ref="transferModal"
+    :total="total"
+    :orderNumber="previewOrderNumber"
+    @paid="onTransferConfirmed"
+/>
 </template>
 
 <script setup>
@@ -359,8 +376,17 @@ const errors = reactive({
     provincia: ''
 })
 
+import CardPaymentModal from '../components/payment/CardPaymentModal.vue'
+import PaypalPaymentModal from '@/components/payment/PaypalPaymentModal.vue'
+import TransferPaymentModal from '@/components/payment/TransferPaymentModal.vue'
+const cardPaymentModal = ref()
+const paypalPaymentModal = ref()
+const transferModal = ref()
+
+const previewOrderNumber = computed(() => generarNumeroPedido())
+
 function validateForm() {
-return true    
+return true    /* de pruebas */
 
     Object.keys(errors).forEach(key => { errors[key] = '' })
     let valid = true
@@ -408,28 +434,130 @@ import { useOrderStore } from '../stores/order'
 
 const orderStore = useOrderStore()
 
+//async function submitOrder() {
 async function submitOrder() {
-    if (!validateForm()) { return }
-    loading.value = true
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    loading.value = false
-const order = {
-    number: 'MER-' + Date.now(),
-    date: new Date(),
-    customer: { ...form },
-    items: [...cart.items],
-    subtotal: cart.totalPrice,
-    shipping: shippingCost.value,
-    total: total.value
+    if (!validateForm()) return
+    if (form.metodoPago === 'tarjeta') {
+        cardPaymentModal.value.open()
+        return
+    }
+    if (form.metodoPago === 'paypal') {
+      paypalPaymentModal.value.open()
+      return
+    }
+    if (form.metodoPago === 'transferencia') {
+      transferModal.value.open()
+      return
+    }
+    await finishOrder()
 }
-orderStore.saveOrder(order)
+
+
+//    if (!validateForm()) { return }
+  //  loading.value = true
+    //await new Promise(resolve => setTimeout(resolve, 1500))
+    //loading.value = false
+/*    const order = {
+        number: generarNumeroPedido(),
+        date: new Date(),
+        customer: { ...form },
+        items: [...cart.items],
+        subtotal: cart.totalPrice,
+        shipping: shippingCost.value,
+        total: total.value,
+        paymentMethod: form.metodoPago,
+        shippingMethod: form.metodoEnvio,
+        paymentStatus: form.metodoPago === 'transferencia'
+              ? 'pending' : 'paid'
+    }*/
+
+/*const order = {
+  number: generarNumeroPedido(),
+  date: new Date(),
+  customer: {
+    nombre: form.nombre,
+    apellidos: form.apellidos,
+    email: form.email,
+    telefono: form.telefono,
+    direccion: form.direccion,
+    codigoPostal: form.codigoPostal,
+    ciudad: form.ciudad,
+    provincia: form.provincia
+  },
+  //items: [...cart.items],
+  items: cart.items.map(item => ({
+    productId: item.product.id,
+    nombre: item.product.nombre,
+    precio: item.product.precio,
+    quantity: item.quantity
+})),
+  subtotal: cart.totalPrice,
+  shipping: shippingCost.value,
+  total: total.value,
+  shippingMethod: form.metodoEnvio,
+  paymentMethod: form.metodoPago,
+  paymentStatus: 'pending',
+  status: 'pending'
+}
+
+
+//    orderStore.saveOrder(order)
+await orderStore.processOrder(order)
 
     cart.clearCart()
     router.push('/pedido-realizado')
+}*/
+
+async function finishOrder() {
+    loading.value = true
+    console.log("1. Empieza finishOrder")
+    const order = {
+        number: generarNumeroPedido(),
+        date: new Date(),
+        customer: { ...form },
+        items: cart.items.map(item => ({
+            productId: item.product.id,
+            nombre: item.product.nombre,
+            precio: item.product.precio,
+            quantity: item.quantity
+        })),
+        subtotal: cart.totalPrice,
+        shipping: shippingCost.value,
+        total: total.value,
+        paymentMethod: form.metodoPago,
+        shippingMethod: form.metodoEnvio
+    }
+    console.log("2. Antes de processOrder")
+    await orderStore.processOrder(order)
+    console.log("3. Después de processOrder")
+
+    loading.value = false
+    console.log("4. loading = false")
+
+    cart.clearCart()
+    console.log("5. carrito borrado")
+    router.push('/pedido-realizado')
+    console.log("6. navegación")
+}
+
+async function onCardPaid() {
+    await finishOrder()
+}
+
+function onCardCancelled() {
+    console.log('Pago cancelado')
+}
+
+async function onPaypalPaid() {
+    await finishOrder()
+}
+
+async function onTransferConfirmed() {
+    await finishOrder()
 }
 
 const shippingCost = computed(() => {
-  switch (form.envio) {
+  switch (form.metodoEnvio) {
     case 'recogida':
       return 0
     case 'urgente':
@@ -438,24 +566,15 @@ const shippingCost = computed(() => {
       return 10
   }
 })
-
 const total = computed(() =>
   cart.totalPrice + shippingCost.value
 )
 
 function generarNumeroPedido() {
-
   const hoy = new Date()
-
-  return `MER-${
-    hoy.getFullYear()
-  }${
-    String(hoy.getMonth()+1).padStart(2,'0')
-  }${
-    String(hoy.getDate()).padStart(2,'0')
-  }-${
-    Math.floor(Math.random()*9000+1000)
-  }`
-
+  return `MER-${ hoy.getFullYear() }${
+    String(hoy.getMonth()+1).padStart(2,'0') }${
+    String(hoy.getDate()).padStart(2,'0') }-${
+    Math.floor(Math.random()*9000+1000)}`
 }
 </script>

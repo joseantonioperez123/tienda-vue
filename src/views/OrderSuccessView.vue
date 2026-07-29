@@ -50,15 +50,17 @@
                 </thead>
                 <tbody>
                     <tr v-for="item in order.items"
-                            :key="item.product.id">
+                            :key="item.productId">
                         <td>
-                            {{ item.product.nombre }}
+                            <!--{{ item.product.nombre }}-->
+                            {{ item.nombre }}
                         </td>
                         <td>
                             {{ item.quantity }}
                         </td>
                         <td class="text-end">
-                            {{ item.product.precio * item.quantity }} €
+                            <!--{{ item.product.precio * item.quantity }}-->
+                            {{ item.precio * item.quantity }} €
                         </td>
                     </tr>
                 </tbody>

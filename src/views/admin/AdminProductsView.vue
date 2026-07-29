@@ -33,7 +33,7 @@
                 <td>
                     {{ product.nombre }}
                 </td>
-                <td>
+                <td>{{ product.categoryId }}
                     {{ catalog.getCategoryName(product.categoryId) }}
                 </td>
                 <td>
@@ -122,8 +122,8 @@ import { useCatalogStore } from '../../stores/catalog'
 
 const catalog = useCatalogStore()
 
-console.log(catalog)
-console.log(Object.keys(catalog))
+//console.log(catalog)
+//console.log(Object.keys(catalog))
 
 
 
@@ -142,6 +142,20 @@ onMounted(() => {
         'hidden.bs.modal',
         () => { selectedProduct.value = null }
     )
+    console.log("Categorías:", catalog.categories)
+    console.log("Primer producto:", catalog.products[0])
+
+console.log(
+  "CategoryId:",
+  catalog.products[0].categoryId
+)
+
+console.log(
+  "Categoría encontrada:",
+  catalog.categories.find(
+    c => c.id === catalog.products[0].categoryId
+  )
+)
 })
 
 /*
@@ -164,7 +178,7 @@ function editProduct(product) {
 
 /* nuestro propio componente ConfirmDialog */
 async function removeProduct(product) {
-    console.log('1. AdminProductsView', product)
+    //console.log('1. AdminProductsView', product)
   const accepted = await confirm.open(
     'Eliminar producto',
     `¿Desea eliminar "${product.nombre}"?`
@@ -230,17 +244,17 @@ function closeModal() {
 }*/
 
 async function saveProduct(product) {
-      console.log('A')
-  console.log(product)
-  console.log(product.id)
+      //console.log('A')
+  //console.log(product)
+  //console.log(product.id)
 
   if (product.id) {
-    console.log('B - Voy a llamar a updateProduct')
+    //console.log('B - Voy a llamar a updateProduct')
     await catalog.updateProduct(product)
-    console.log('C - He vuelto de updateProduct')
+    //console.log('C - He vuelto de updateProduct')
     toast.show('Producto actualizado correctamente','primary')
   } else {
-    console.log('D - Voy a crear')
+    //console.log('D - Voy a crear')
     await catalog.createProduct(product)
     toast.show('Producto creado correctamente','primary')
   }

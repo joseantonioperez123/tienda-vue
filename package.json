@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^9.12.1",
     "@supabase/supabase-js": "^2.110.4",
     "bootstrap": "^5.3.8",
     "firebase": "^12.15.0",
