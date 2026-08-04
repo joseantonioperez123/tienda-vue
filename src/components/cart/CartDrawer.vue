@@ -34,11 +34,15 @@
 
 
 <script setup>
+import analyticsService from '../../services/analytics/analyticsService'
+
 import CartItem from './CartItem.vue'
 import CartSummary from './CartSummary.vue'
 import { useCartStore } from '../../stores/cart'
+import { useCatalogStore } from '@/stores/catalog'
 
 const cart=useCartStore()
+const catalog = useCatalogStore()
 
 import { useRouter } from 'vue-router'
 
@@ -49,12 +53,21 @@ function goToCheckout() {
     router.push('/checkout')
 }
 
-import { watch } from 'vue'
+import { watch, onMounted } from 'vue'
 
 watch(
   () => cart.isOpen,
   (open) => { document.body.style.overflow = open ? 'hidden' : '' }
 )
+
+onMounted(() => {
+    /*analyticsService.viewCart(
+        cart.items,
+        catalog.getCategoryName
+    )*/
+    analyticsService.viewCart(cart.items)
+})
+
 </script>
 
 <style>

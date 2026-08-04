@@ -26,7 +26,11 @@
                     <input
                         v-model="email"
                         type="email"
-                        class="form-control">
+                        placeholder="example@host.com"
+                        class="form-control"
+                        :class="{
+        'is-valid': email,
+        'is-invalid': email}">
                 </div>
                 <div class="mb-4">
                     <label class="form-label">
@@ -147,6 +151,14 @@ defineExpose({
 
 .btn-primary:hover{
     background:#005ea6;
+}
+
+input.is-valid{
+    border-color:#28a745;
+}
+
+input.is-invalid{
+    border-color:#dc3545;
 }
 
 </style>

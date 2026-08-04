@@ -38,7 +38,22 @@ export const useCartStore = defineStore('cart', {
         else { this.removeProduct(productId) }
         saveCart(this.items)
     },
+    /*removeProduct(productId) {
+        this.items = this.items.filter( i => i.product.id !== productId )
+        saveCart(this.items)
+    },*/
     removeProduct(productId) {
+        const item = this.items.find( i => i.product.id === productId )
+        if (!item) return
+        /*analyticsService.removeFromCart(
+            item.product,
+            '',          // luego mejoraremos esto
+            item.quantity
+        )*/
+       analyticsService.removeFromCart(
+    item.product,
+    item.quantity
+)
         this.items = this.items.filter( i => i.product.id !== productId )
         saveCart(this.items)
     },

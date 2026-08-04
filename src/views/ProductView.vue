@@ -72,6 +72,8 @@ import LoadingSpinner from '../components/common/LoadingSpinner.vue'
 
 import Breadcrumb from '../components/common/Breadcrumb.vue'
 
+import analyticsService from '../services/analytics/analyticsService'
+
 const route = useRoute()
 
 console.log(route.params.id)
@@ -90,5 +92,31 @@ const breadcrumbItems = computed(() => [
   { text:'Productos', to:{ name:'products'} },
   { text: producto.value?.nombre || 'Producto' }
 ])
+
+console.log({
+    producto: producto.value.nombre,
+    categoria: catalog.getCategoryName(producto.value.categoryId),
+    precio: producto.value.precio
+})
+
+import { watch } from 'vue'
+
+watch(
+    producto,
+    (nuevoProducto) => {
+        if (!nuevoProducto) return
+        /*analyticsService.viewProduct(
+            nuevoProducto,
+            catalog.getCategoryName(nuevoProducto.categoryId)
+        )*/
+        analyticsService.viewProduct(producto.value)
+    },
+    { immediate: true }
+)
+
+/*analyticsService.viewProduct(
+    producto.value,
+    catalog.getCategoryName(producto.value.categoryId)
+)*/
 
 </script>

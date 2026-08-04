@@ -110,6 +110,7 @@ const categoryName = computed(() =>
   catalog.getCategoryName(props.product.categoryId)
 )
 
+import analyticsService from '../../services/analytics/analyticsService'
 
 import { useCartStore } from '../../stores/cart'
 
@@ -118,5 +119,11 @@ const cart = useCartStore()
 function addToCart() {
   //console.log('Añadiendo:', props.product)
   cart.addProduct(props.product)
+  /*analyticsService.addToCart(
+    props.product,
+    catalog.getCategoryName(props.product.categoryId),
+    1
+)*/
+analyticsService.addToCart(props.product)
 }
 </script>

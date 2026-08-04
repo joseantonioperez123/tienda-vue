@@ -2,8 +2,8 @@
 <div class="container py-5">
   <div class="row mb-4">
     <div class="col-md-6">
-<!--      <select v-model="selectedCategory" class="form-select"> -->
-      <select v-model.number="selectedCategory" class="form-select">
+      <select v-model="selectedCategory" class="form-select">
+<!--      <select v-model.number="selectedCategory" class="form-select">-->
         <option :value="null">Todas las categorías</option>
         <option v-for="category in catalog.categories" :key="category.id"
           :value="category.id">
@@ -11,6 +11,7 @@
         </option>
       </select>
     </div>
+    
     <div class="col-md-6">
       <select v-model="sortBy" class="form-select">
         <option value="">Ordenar por...</option>

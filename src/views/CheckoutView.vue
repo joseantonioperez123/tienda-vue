@@ -344,6 +344,8 @@
 
 import { ref, reactive, computed } from 'vue'
 
+import analyticsService from '../services/analytics/analyticsService'
+
 import { useRouter } from 'vue-router'
 import { useCartStore } from '../stores/cart'
 
@@ -509,6 +511,11 @@ await orderStore.processOrder(order)
 }*/
 
 async function finishOrder() {
+  /*analyticsService.beginCheckout(
+    cart.items,
+    catalog.getCategoryName
+)*/
+analyticsService.beginCheckout(cart.items)
     loading.value = true
     console.log("1. Empieza finishOrder")
     const order = {
@@ -530,6 +537,11 @@ async function finishOrder() {
     console.log("2. Antes de processOrder")
     await orderStore.processOrder(order)
     console.log("3. Después de processOrder")
+
+    if (orderStore.lastOrder.paymentStatus === 'paid') {
+    analyticsService.purchase(orderStore.lastOrder)
+}
+
 
     loading.value = false
     console.log("4. loading = false")
