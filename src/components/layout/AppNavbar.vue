@@ -7,33 +7,50 @@
     <router-link class="navbar-brand" to="/">
       Muebles Merino
     </router-link>
-    <button
+    <!--<button
       class="navbar-toggler"
       type="button"
       data-bs-toggle="collapse"
       data-bs-target="#navbarMenu"
-    >
+    >-->
+
+<button
+  class="navbar-toggler"
+  type="button"
+  :aria-expanded="menuOpen"
+  aria-controls="navbarMenu"
+  @click="menuOpen = !menuOpen"
+>
+
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarMenu">
+    <!--<div class="collapse navbar-collapse" id="navbarMenu">-->
+
+<div
+  ref="navbarMenu"
+  class="collapse navbar-collapse"
+  :class="{ show: menuOpen }"
+  id="navbarMenu"
+>
+
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <router-link class="nav-link" to="/">
+          <router-link class="nav-link" to="/" @click="menuOpen = false">
             Inicio
           </router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="/productos">
+          <router-link class="nav-link" to="/productos" @click="menuOpen = false">
             Productos
           </router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="/cocinas">
+          <router-link class="nav-link" to="/cocinas" @click="menuOpen = false">
             Cocinas
           </router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="/contacto">
+          <router-link class="nav-link" to="/contacto" @click="menuOpen = false">
             Contacto
           </router-link>
         </li>
@@ -46,12 +63,12 @@
         <li v-if="auth.isAdmin" class="nav-item">
           <RouterLink
             class="nav-link"
-            to="/admin/productos">
+            to="/admin/productos" @click="menuOpen = false">
             Administración
           </RouterLink>
         </li>
         <li v-if="!auth.isAuthenticated" class="nav-item">
-          <RouterLink class="nav-link" to="/auth">
+          <RouterLink class="nav-link" to="/auth" @click="menuOpen = false">
             Iniciar sesión
           </RouterLink>
         </li>
@@ -120,8 +137,8 @@
 
 <script setup>
 
-import { ref, onMounted } from 'vue'
-import * as bootstrap from 'bootstrap'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+//import * as bootstrap from 'bootstrap'
 
 import { useRouter } from 'vue-router'
 
@@ -146,6 +163,8 @@ onMounted(() => {
 })*/
 
 const showUserMenu = ref(false)
+const menuOpen = ref(false)
+const navbarMenu = ref(null)
 
 import { useCartStore } from '../../stores/cart'
 
@@ -167,11 +186,7 @@ const auth = useAuthStore()
     showUserMenu.value = false
   }*/
 
-
 const userMenu = ref(null)
-
-
-import { onBeforeUnmount } from 'vue'
 
 /*function closeMenu(event) {
   if (!event.target.closest('.user-menu')) {
@@ -185,9 +200,30 @@ function closeMenu(event) {
   }
 }
 
-onMounted(() => { document.addEventListener('click', closeMenu) })
+function closeNavbarMenu(event) {
+  if (
+    menuOpen.value &&
+    navbarMenu.value &&
+    !navbarMenu.value.contains(event.target) &&
+    !event.target.closest('.navbar-toggler')
+  ) {
+    menuOpen.value = false
+  }
+}
 
-onBeforeUnmount(() => { document.removeEventListener('click', closeMenu) })
+onMounted(() => {
+  document.addEventListener('click', closeMenu)
+  document.addEventListener('click', closeNavbarMenu)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', closeMenu)
+  document.removeEventListener('click', closeNavbarMenu)
+})
+
+//onMounted(() => { document.addEventListener('click', closeMenu) })
+
+//onBeforeUnmount(() => { document.removeEventListener('click', closeMenu) })
 </script>
 
 <style>
