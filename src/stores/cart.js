@@ -4,7 +4,7 @@ import { loadCart, saveCart, clearCartStorage } from '../services/cartStorageSer
 export const useCartStore = defineStore('cart', {
   /*state: () => ({ items: [] }),*/
   /*state: () => ({ items: loadCart() }),*/
-  state: () => ({ items: loadCart(), isOpen: false }),
+  state: () => ({ items: loadCart(), isOpen: false, bounceCart: false }),
   getters: {
     totalItems: state =>
       state.items.reduce( (total, item) => total + item.quantity, 0 ),
@@ -24,8 +24,16 @@ export const useCartStore = defineStore('cart', {
         this.items.push({ product, quantity: 1 })
       }
       saveCart(this.items)
-      this.isOpen = true
+      //this.isOpen = true    para que no abra el carrito cada vez que añadimos un producto
+      this.triggerBounce()
     },
+    triggerBounce() {
+    this.bounceCart = false
+
+    requestAnimationFrame(() => {
+        this.bounceCart = true
+    })
+},
     increment(productId) {
         const item = this.items.find( i => i.product.id === productId )
         if (item) { item.quantity++ }
@@ -50,10 +58,7 @@ export const useCartStore = defineStore('cart', {
             '',          // luego mejoraremos esto
             item.quantity
         )*/
-       analyticsService.removeFromCart(
-    item.product,
-    item.quantity
-)
+       analyticsService.removeFromCart( item.product, item.quantity )
         this.items = this.items.filter( i => i.product.id !== productId )
         saveCart(this.items)
     },

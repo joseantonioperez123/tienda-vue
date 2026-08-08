@@ -1,13 +1,12 @@
 <template>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark app-navbar">
+<!--<nav class="navbar navbar-expand-lg navbar-dark bg-dark app-navbar"
+      :class="{ 'navbar-fixed': fixed }">-->
   <div class="container">
-
     <router-link class="navbar-brand" to="/">
       Muebles Merino
     </router-link>
-
     <button
       class="navbar-toggler"
       type="button"
@@ -16,11 +15,8 @@
     >
       <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse" id="navbarMenu">
-
       <ul class="navbar-nav ms-auto">
-
         <li class="nav-item">
           <router-link class="nav-link" to="/">
             Inicio
@@ -41,39 +37,33 @@
             Contacto
           </router-link>
         </li>
-
         <!-- administración, más adelante con autenticación -->
         <!--<li class="nav-item">
             <router-link class="nav-link" to="/admin/productos">
                 Administración
             </router-link>
         </li>-->
-
-<li v-if="auth.isAdmin" class="nav-item">
-  <RouterLink
-    class="nav-link"
-    to="/admin/productos">
-    Administración
-  </RouterLink>
-</li>
-
-
+        <li v-if="auth.isAdmin" class="nav-item">
+          <RouterLink
+            class="nav-link"
+            to="/admin/productos">
+            Administración
+          </RouterLink>
+        </li>
         <li v-if="!auth.isAuthenticated" class="nav-item">
           <RouterLink class="nav-link" to="/auth">
             Iniciar sesión
           </RouterLink>
         </li>
         <!--<li v-if="auth.isAuthenticated" class="nav-item dropdown">-->
-
-<li ref="userMenu"
-  v-if="auth.isAuthenticated"
-  class="nav-item position-relative user-menu"
->
+        <li ref="userMenu"
+          v-if="auth.isAuthenticated"
+          class="nav-item position-relative user-menu"
+        >
           <!--<a class="nav-link dropdown-toggle" href="#"
             data-bs-toggle="dropdown">
             {{ auth.user.email }}
           </a>-->
-
 <!--<button
   class="nav-link dropdown-toggle btn btn-link border-0"
   type="button"
@@ -90,8 +80,6 @@
 >
   {{ auth.user.email }}
 </button>
-
-
           <ul class="dropdown-menu">
             <li>
               <button class="dropdown-item" @click="logout">
@@ -100,31 +88,19 @@
             </li>
           </ul>
         </li>-->
-
-
-
-  <button
-    class="nav-link btn btn-link border-0 text-white"
-    @click="showUserMenu = !showUserMenu"
-  >
-    {{ auth.user.email }}
-  </button>
-
-  <ul
-    v-if="showUserMenu"
-    class="dropdown-menu dropdown-menu-end show"
-  >
-    <li>
-      <button
-        class="dropdown-item"
-        @click="logout"
-      >
-        Cerrar sesión
-      </button>
-    </li>
-  </ul>
-
-</li>
+        <button class="nav-link btn btn-link border-0 text-white"
+                    @click="showUserMenu = !showUserMenu">
+          {{ auth.user.email }}
+        </button>
+        <ul v-if="showUserMenu"
+            class="dropdown-menu dropdown-menu-end show">
+          <li>
+            <button class="dropdown-item" @click="logout">
+              Cerrar sesión
+            </button>
+          </li>
+        </ul>
+      </li>
  <!--       <span class="badge bg-danger">
   {{ cart.totalItems }}
 </span>
@@ -132,19 +108,13 @@
           🛒 {{ cart.totalItems }}
         </li>-->
       </ul>
-
-      
     </div>
-            <div class="d-flex align-items-center">
-
-    <CartButton/>
-              <CartDrawer />
-  </div>
-
-</div> 
+    <div class="d-flex align-items-center">
+      <CartButton/>
+      <CartDrawer />
+    </div>
+  </div> 
 </nav>
-
-
 <!--<CartOffcanvas/>-->
 </template>
 
@@ -156,6 +126,13 @@ import * as bootstrap from 'bootstrap'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+
+/*const props = defineProps({
+  fixed: {
+    type: Boolean,
+    default: false
+  }
+})*/
 
 async function logout() {
   await auth.logout()
@@ -170,18 +147,18 @@ onMounted(() => {
 
 const showUserMenu = ref(false)
 
-  import { useCartStore } from '../../stores/cart'
+import { useCartStore } from '../../stores/cart'
 
-  const cart = useCartStore()
+const cart = useCartStore()
 
-  import CartButton from '../cart/CartButton.vue'
+import CartButton from '../cart/CartButton.vue'
 
-  import CartDrawer from '../cart/CartDrawer.vue'
-  //import CartOffcanvas from '../cart/CartOffcanvas.vue'
+import CartDrawer from '../cart/CartDrawer.vue'
+//import CartOffcanvas from '../cart/CartOffcanvas.vue'
 
-  import { useAuthStore } from '../../stores/auth'
+import { useAuthStore } from '../../stores/auth'
 
-  const auth = useAuthStore()
+const auth = useAuthStore()
 
   //async function logout() { await auth.logout() }
   
@@ -194,7 +171,7 @@ const showUserMenu = ref(false)
 const userMenu = ref(null)
 
 
-  import { onBeforeUnmount } from 'vue'
+import { onBeforeUnmount } from 'vue'
 
 /*function closeMenu(event) {
   if (!event.target.closest('.user-menu')) {
@@ -203,19 +180,51 @@ const userMenu = ref(null)
 }*/
 
 function closeMenu(event) {
-  if (
-    userMenu.value &&
-    !userMenu.value.contains(event.target)
-  ) {
+  if ( userMenu.value && !userMenu.value.contains(event.target) ) {
     showUserMenu.value = false
   }
 }
 
-onMounted(() => {
-  document.addEventListener('click', closeMenu)
-})
+onMounted(() => { document.addEventListener('click', closeMenu) })
 
-onBeforeUnmount(() => {
-  document.removeEventListener('click', closeMenu)
-})
+onBeforeUnmount(() => { document.removeEventListener('click', closeMenu) })
 </script>
+
+<style>
+
+
+    /*z-index: 1030;    usado en cabeceras Bootstrap para que el
+                      contenido no pase por encima */
+    /*background: white;*/
+
+/*.app-navbar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 999999 !important;
+}*/
+
+.app-navbar {
+    width: 100%;
+    z-index: 1030;
+}
+
+/*.navbar-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+}*/
+
+/*body {
+    overflow: visible !important;
+}
+
+html {
+    overflow: visible !important;
+}*/
+
+</style>

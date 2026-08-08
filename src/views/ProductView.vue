@@ -37,7 +37,36 @@
       <p class="display-6 text-primary">
         {{ producto.precio }} €
       </p>
-
+      <!--<div class="d-grid my-4">
+          <button
+              class="btn btn-primary btn-lg"
+              @click="addToCart">
+              🛒 Añadir al carrito
+          </button>
+      </div>-->
+      <!--<div class="d-grid my-4">
+          <button
+              class="btn btn-success btn-lg shadow-sm"
+              @click="addToCart">
+              <i class="bi bi-cart-plus me-2"></i>
+              Añadir al carrito
+          </button>
+      </div>-->
+      <div class="d-grid my-4">
+          <button
+              class="btn btn-lg shadow-sm"
+              :class="added ? 'btn-success' : 'btn-primary'"
+              @click="addToCart">
+              <template v-if="!added">
+                  <i class="bi bi-cart-plus me-2"></i>
+                  Añadir al carrito
+              </template>
+              <template v-else>
+                  <i class="bi bi-check-circle-fill me-2"></i>
+                  Añadido al carrito
+              </template>
+          </button>
+      </div>
     </div>
 
   </div>
@@ -66,18 +95,45 @@ const catalog = useCatalogStore()
 
 import { useRoute } from 'vue-router'
 
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 
 import LoadingSpinner from '../components/common/LoadingSpinner.vue'
 
 import Breadcrumb from '../components/common/Breadcrumb.vue'
 
+import { useCartStore } from '@/stores/cart'
+//import analyticsService from '@/services/analytics/analyticsService'
 import analyticsService from '../services/analytics/analyticsService'
+
+import { useFlyingProductStore } from '@/stores/flyingProduct'
+
+const flying = useFlyingProductStore()
 
 const route = useRoute()
 
 console.log(route.params.id)
 console.log(catalog.products)
+
+const cart = useCartStore()
+
+const added = ref(false)
+
+/*function addToCart() {
+    cart.addProduct(producto.value)
+    analyticsService.addToCart(producto.value)
+}*/
+
+async function addToCart() {
+
+    flying.fly(producto.value, event)
+    
+    cart.addProduct(producto.value)
+    analyticsService.addToCart(producto.value)
+    added.value = true
+    setTimeout(() => {
+        added.value = false
+    }, 1500)
+}
 
 /*const producto = computed(() =>
   catalog.getProduct(Number(route.params.id))
@@ -120,3 +176,11 @@ watch(
 )*/
 
 </script>
+
+<style>
+
+.btn{
+    transition: all .25s ease;
+}
+
+</style>

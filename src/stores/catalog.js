@@ -18,7 +18,7 @@ import { getAllCategories } from '../services/categoryService'
 export const useCatalogStore = defineStore('catalog', {
   state: () => ({ products: [], categories: [], loading: false }),
   actions: {
-    async loadCatalog() {
+    /*async loadCatalog() {
       // Evita volver a cargar los datos
       if (this.products.length && this.categories.length) {
         return
@@ -30,7 +30,37 @@ export const useCatalogStore = defineStore('catalog', {
       } finally {
         this.loading = false
       }
-    },
+    },*/
+async loadCatalog() {
+//console.log("EN loadCatalog")
+  if (this.products.length && this.categories.length) {
+    console.log("ya hay productos, no carga catalog",this.products.length && this.categories.length)
+    return
+  }
+
+  this.loading = true
+
+  try {
+
+//    console.log('>>> Antes de getAllProducts')
+    this.products = await getAllProducts()
+//    console.log('>>> Después de getAllProducts')
+
+//    console.log('>>> Antes de getAllCategories')
+    this.categories = await getAllCategories()
+//    console.log('>>> Después de getAllCategories')
+
+  } catch (e) {
+
+    console.error('ERROR:', e)
+
+  } finally {
+
+    this.loading = false
+
+  }
+
+},
     /*async deleteProduct(id) {
       await apiDeleteProduct(id)
       this.products = this.products.filter(product => product.id !== id)

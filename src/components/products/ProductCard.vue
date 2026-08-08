@@ -39,7 +39,7 @@
         </button>-->
 
 <button v-if="!readonly" class="btn btn-primary w-100"
-  @click="cart.addProduct(product)"
+  @click="addToCart"
 >
   Añadir al carrito
 </button>
@@ -116,9 +116,15 @@ import { useCartStore } from '../../stores/cart'
 
 const cart = useCartStore()
 
-function addToCart() {
+import { useFlyingProductStore } from '@/stores/flyingProduct'
+
+const flyingProduct = useFlyingProductStore()
+
+function addToCart(event) {
+  // event es el MouseEvent del click
   //console.log('Añadiendo:', props.product)
   cart.addProduct(props.product)
+  flyingProduct.fly(props.product, event)
   /*analyticsService.addToCart(
     props.product,
     catalog.getCategoryName(props.product.categoryId),
